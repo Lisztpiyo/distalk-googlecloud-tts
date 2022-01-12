@@ -76,7 +76,7 @@ async def paimon(ctx):
                 await ctx.author.voice.channel.connect()
 
 @client.command()
-async def byebye(ctx):
+async def ehe(ctx):
     if ctx.message.guild:
         if ctx.voice_client is None:
             await ctx.send('ボイスチャンネルに接続していません。')
@@ -209,7 +209,7 @@ async def on_command_error(ctx, error):
 async def usage(ctx):
     message = f'''◆◇◆{client.user.name}の使い方◆◇◆
 {prefix}paimon：パイモンをボイスチャンネルに召喚します。
-{prefix}byebye：パイモンをボイスチャンネルから切断します。'''
+{prefix}ehe：パイモンをボイスチャンネルから切断します。'''
     await ctx.send(message)
 
 def tts(message):
