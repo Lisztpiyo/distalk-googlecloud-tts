@@ -8,7 +8,7 @@ import emoji
 import json
 from google.cloud import texttospeech
 
-prefix = os.getenv('DISCORD_BOT_PREFIX', default='🦑')
+prefix = os.getenv('DISCORD_BOT_PREFIX', default='!')
 tts_lang = os.getenv('DISCORD_BOT_LANG', default='ja-JP')
 tts_voice = os.getenv('DISCORD_BOT_VOICE', default='ja-JP-Wavenet-B')
 token = os.environ['DISCORD_BOT_TOKEN']
@@ -46,28 +46,28 @@ tts_client = texttospeech.TextToSpeechClient()
 
 @client.event
 async def on_ready():
-    presence = f'{prefix}ヘルプ | 0/{len(client.guilds)}サーバー'
+    presence = f'えへって何だよ！'
     await client.change_presence(activity=discord.Game(name=presence))
 
 @client.event
 async def on_guild_join(guild):
-    presence = f'{prefix}ヘルプ | {len(client.voice_clients)}/{len(client.guilds)}サーバー'
+    presence = f'えへって何だよ！'
     await client.change_presence(activity=discord.Game(name=presence))
 
 @client.event
 async def on_guild_remove(guild):
-    presence = f'{prefix}ヘルプ | {len(client.voice_clients)}/{len(client.guilds)}サーバー'
+    presence = f'えへって何だよ！'
     await client.change_presence(activity=discord.Game(name=presence))
 
 @client.command()
-async def 接続(ctx):
+async def paimon(ctx):
     if ctx.message.guild:
         if ctx.author.voice is None:
-            await ctx.send('ボイスチャンネルに接続してから呼び出してください。')
+            await ctx.send('ボイスチャンネルに接続してから召喚してね。')
         else:
             if ctx.guild.voice_client:
                 if ctx.author.voice.channel == ctx.guild.voice_client.channel:
-                    await ctx.send('接続済みです。')
+                    await ctx.send('接続済みだよ～')
                 else:
                     await ctx.voice_client.disconnect()
                     await asyncio.sleep(0.5)
@@ -76,7 +76,7 @@ async def 接続(ctx):
                 await ctx.author.voice.channel.connect()
 
 @client.command()
-async def 切断(ctx):
+async def byebye(ctx):
     if ctx.message.guild:
         if ctx.voice_client is None:
             await ctx.send('ボイスチャンネルに接続していません。')
@@ -91,7 +91,7 @@ async def on_message(message):
                 text = message.content
 
                 # Add author's name
-                text = message.author.name + '、' + text
+                # text = message.author.name + '、' + text
 
                 # Replace new line
                 text = text.replace('\n', '、')
@@ -158,12 +158,13 @@ async def on_message(message):
 async def on_voice_state_update(member, before, after):
     if before.channel is None:
         if member.id == client.user.id:
-            presence = f'{prefix}ヘルプ | {len(client.voice_clients)}/{len(client.guilds)}サーバー'
+            presence = f'えへって何だよ！'
             await client.change_presence(activity=discord.Game(name=presence))
         else:
             if member.guild.voice_client is None:
-                await asyncio.sleep(0.5)
-                await after.channel.connect()
+                # 自動入室はしないのでコメントアウト
+                # await asyncio.sleep(0.5)
+                # await after.channel.connect()
             else:
                 if member.guild.voice_client.channel is after.channel:
                     text = member.name + 'さんが入室しました'
@@ -174,7 +175,7 @@ async def on_voice_state_update(member, before, after):
                     member.guild.voice_client.play(source)
     elif after.channel is None:
         if member.id == client.user.id:
-            presence = f'{prefix}ヘルプ | {len(client.voice_clients)}/{len(client.guilds)}サーバー'
+            presence = f'えへって何だよ！'
             await client.change_presence(activity=discord.Game(name=presence))
         else:
             if member.guild.voice_client:
@@ -205,11 +206,10 @@ async def on_command_error(ctx, error):
     await ctx.send(error_msg)
 
 @client.command()
-async def ヘルプ(ctx):
+async def usage(ctx):
     message = f'''◆◇◆{client.user.name}の使い方◆◇◆
-{prefix}＋コマンドで命令できます。
-{prefix}接続：ボイスチャンネルに接続します。
-{prefix}切断：ボイスチャンネルから切断します。'''
+{prefix}paimon：パイモンをボイスチャンネルに召喚します。
+{prefix}byebye：パイモンをボイスチャンネルから切断します。'''
     await ctx.send(message)
 
 def tts(message):
